@@ -1,4 +1,4 @@
-#pragma once//#include <algorithm>
+#pragma once
 #define NULL 0
 //red-black tree
 template <class T,bool comp(const T &, const T &)>
@@ -12,12 +12,29 @@ private:
 		node * right;
 		bool is_red;
 		T value;
-
 		node();
+		node(const T &b, node * par = NULL)
+		{
+			value = b;
+			parent = par;
+			if (par)
+				is_red = true;
+			else
+				is_red = false;
+			right = NULL;
+			left = NULL;
+		}
 		node(const node &, node *);
-		node(const T &, node *);
 		~node();
-		node * brother();
+		node * brother()
+		{
+			if (!this->parent)
+				return NULL;
+			if (this->parent->left == this)
+				return this->parent->right;
+			else
+				return this->parent->left;
+		}
 	};
 
 	node * root;
@@ -27,146 +44,132 @@ private:
 		if (!b)
 			return false;
 		else
-			b->is_red;
+			return b->is_red;
 	}
-
-
-	void chcolouradd(node *)
+	void chcolouradd(node *b)
 	{
-		if (colour(b->left) == colour(b->right) == true)
+		if (!b)
+		{
+			root->is_red = false;
+			return;
+		}
+		if ((colour(b->left)) && (colour(b->right)))
 		{
 			b->left->is_red = b->right->is_red = false;
 			b->is_red = true;
+			if (!b->parent)
+			{
+				b->is_red = false;
+				return;
+			}
 			if (b->parent->is_red)
-				chcolour(b->parent->parent);
+				chcolouradd(b->parent->parent);
+			return;
 		}
 		if (colour(b->left))
 		{
+			if (colour(b->left->right))
+				rotateleft(b->left);
 			b->left->is_red = false;
 			b->is_red = true;
 			rotateright(b);
+			return;
 		}
 		if (colour(b->right))
 		{
+			if (colour(b->right->left))
+				rotateleft(b->right);
 			b->right->is_red = false;
 			b->is_red = true;
 			rotateleft(b);
+			return;
 		}
 	}
-	void chcolourdel(node *)
+	void chcolourdel(node *it)
 	{
-		if (it->parent->right->is_red)
+		if (!it)
+			return;
+		if (colour(it->parent->right))
 		{
 			it->parent->right->is_red = false;
 			it->parent->is_red = true;
 			rotateleft(it->parent);
+			it = it->left->right;
 		}
-		if (it->parent->left->is_red)
+		if (colour(it->parent->left))
 		{
 			it->parent->left->is_red = false;
 			it->parent->is_red = true;
 			rotateright(it->parent);
+			it = it->right->left;
 		}
-		node * brother = it->brother();
-		if ((!brother->left->colour()) && (!brother->right->colour()))
+		//node * brother = it->brother();
+		if ((!colour(it->left)) && (!colour(it->right)))
 		{
-			if (it->parent->colour() = true)
+			if (colour(it->parent))
 			{
 				it->parent->is_red = false;
-				brother->is_red = true;
+				it->is_red = true;
 				return;
 			}
 			else
 			{
-				brother->is_red = true;
+				it->is_red = true;
 				chcolourdel(it->parent);
 			}
 		}
-		if (brother == it->parent->right)
+		if (it == it->parent->right)
 		{
-			if ((brother->left->colour()) && (!brother->right->colour()))
+			if ((colour(it->left)) && (!colour(it->right)))
 			{
-				brother->left->is_red = false;
-				brother->is_red = true;
-				rotateright(brother);
-				brother = brother->parent;
+				it->left->is_red = false;
+				it->is_red = true;
+				rotateright(it);
+				it = it->parent;
 			}
-			if (brother->right->colour())
+			if (colour(it->right))
 			{
-				brother->right->is_red = false;
-				brother->is_red = brother->parent->is_red;
-				brother->parent->is_red = false;
-				rotateleft(brother->parent);
+				it->right->is_red = false;
+				it->is_red = it->parent->is_red;
+				it->parent->is_red = false;
+				rotateleft(it->parent);
 			}
 			return;
 		}
-		if (brother == it->parent->left)
+		if (it == it->parent->left)
 		{
-			if ((!brother->left->colour()) && (brother->right->colour()))
+			if ((!colour(it->left)) && (colour(it->right)))
 			{
-				brother->right->is_red = false;
-				brother->is_red = true;
-				rotateleft(brother);
-				brother = brother->parent;
+				it->right->is_red = false;
+				it->is_red = true;
+				rotateleft(it);
+				it = it->parent;
 			}
-			if (brother->left->colour())
+			if (colour(it->left))
 			{
-				brother->left->is_red = false;
-				brother->is_red = brother->parent->is_red;
-				brother->parent->is_red = false;
-				rotateright(brother->parent);
+				it->left->is_red = false;
+				it->is_red = it->parent->is_red;
+				it->parent->is_red = false;
+				rotateright(it->parent);
 			}
 			return;
 		}
 	}
-
-	node * rotateleft(node *)
+	node * rotateleft(node *b)
 	{
 		if (!b->parent)
 		{
-			set<T, comp>::node temp = root->right->left;
+			set<T, comp>::node * temp = root->right->left;
 			root->right->left = root;
 			root->parent = root->right;
 			root->right = temp;
-			temp->parent = root;
+			if (temp)
+				temp->parent = root;
 			root = root->parent;
 			root->parent = NULL;
 			return root;
 		}
-		set<T, comp>::node p = b->parent;
-		if (b == p->left)
-		{
-			p->left = b->left;
-			b->left->parent = p;
-		}
-		else
-		{
-			p->right = b->left;
-			b->left->parent = p;
-		}
-		set<T, comp>::node temp = b->right->left;
-		b->right->left = b;
-		b->parent = b->right;
-		b->right = temp;
-		temp->parent = b;
-		return b->parent;
-	}
-
-
-	node * rotateright(node *)
-	{
-		if (!b->parent)
-		{
-			set<T, comp>::node temp = root->left->right;
-			root->left->right = root;
-			root->parent = root->left;
-			root->left = temp;
-			temp->parent = root;
-			root = root->parent;
-			root->parent = NULL;
-			return root;
-		}
-		set<T, comp>::node p = b->parent;
+		set<T, comp>::node * p = b->parent;
 		if (b == p->left)
 		{
 			p->left = b->right;
@@ -177,11 +180,45 @@ private:
 			p->right = b->right;
 			b->right->parent = p;
 		}
-		set<T, comp>::node temp = b->left->right;
+		set<T, comp>::node * temp = b->right->left;
+		b->right->left = b;
+		b->parent = b->right;
+		b->right = temp;
+		if (temp)
+			temp->parent = b;
+		return b->parent;
+	}
+	node * rotateright(node *b)
+	{
+		if (!b->parent)
+		{
+			set<T, comp>::node * temp = root->left->right;
+			root->left->right = root;
+			root->parent = root->left;
+			root->left = temp;
+			if (temp)
+				temp->parent = root;
+			root = root->parent;
+			root->parent = NULL;
+			return root;
+		}
+		set<T, comp>::node * p = b->parent;
+		if (b == p->left)
+		{
+			p->left = b->left;
+			b->left->parent = p;
+		}
+		else
+		{
+			p->right = b->left;
+			b->left->parent = p;
+		}
+		set<T, comp>::node * temp = b->left->right;
 		b->left->right = b;
 		b->parent = b->left;
 		b->left = temp;
-		temp->parent = b;
+		if (temp)
+			temp->parent = b;
 		return b->parent;
 	}
 public:
@@ -189,37 +226,182 @@ public:
 	set(const T &);
 	//set(const T *, size_t);
 	set(const set<T, comp> &);
+	set(set<T, comp> &&);
 	~set();
 	bool is_empty();
 	bool add(const T &); //true если добавлен. false если элемент уже есть
 	bool del(const T &); //true если удален. false если такого нет
 	bool is_in(const T &);
-	friend set<T, comp> operator|(const set<T, comp> &, const set<T, comp> &);  //Объединение множеств
-	friend set<T, comp> operator/(const set<T, comp> &, const set<T, comp> &);  //Разность множеств
-	friend set<T, comp> operator^(const set<T, comp> &, const set<T, comp> &);  //Симметрическая разность множества
-	friend set<T, comp> operator&(const set<T, comp> &, const set<T, comp> &);  //Пересечение множеств
-	set<T, comp> & operator|=(const set<T, comp> &);
-	set<T, comp> & operator/=(const set<T, comp> &);
-	set<T, comp> & operator^=(const set<T, comp> &);
-	set<T, comp> & operator&=(const set<T, comp> &);
+	friend set<T, comp> operator|(const set<T, comp> &a, const set<T, comp> &b)  //Объединение множеств
+	{
+		return (set<T, comp>(a) |= b);
+	}
+	friend set<T, comp> operator/(const set<T, comp> &a, const set<T, comp> &b)  //Разность множеств
+	{
+		set<T, comp> res;
+		iterator it = a.begin();
+		for (; it != a.end(); ++it)
+		{
+			if (!b.is_in(*it))
+				res.add(*it);
+		}
+		if (!b.is_in(*it))
+			res.add(*it);
+	}
+	friend set<T, comp> operator^(const set<T, comp> &a, const set<T, comp> &b)  //Симметрическая разность множества
+	{
+		return (set<T, comp>(a) ^= b);
+	}
+	friend set<T, comp> operator&(const set<T, comp> &a, const set<T, comp> &b)  //Пересечение множеств
+	{
+		iterator it = b.begin();
+		set<T, comp> res;
+		for (; it != b.end(); ++it)
+		{
+			if (a.is_in(*it))
+				res.add(*it);
+		}
+		if (a.is_in(*it))
+			res.add(*it);
+		return res;
+	}
+	set<T, comp> & operator|=(const set<T, comp> &b)
+	{
+		iterator it = b.begin();
+		for (; it != b.end(); ++it)
+		{
+			add(*it);
+		}
+		add(*it);
+	}
+	set<T, comp> & operator/=(const set<T, comp> &b)
+	{
+		iterator it = b.begin();
+		for (; it != b.end(); ++it)
+		{
+			del(*it);
+		}
+		del(*it);
+	}
+	set<T, comp> & operator^=(const set<T, comp> &b)
+	{
+		iterator it = b.begin();
+		for (; it != b.end(); ++it)
+		{
+			if (!add(*it))
+				del(*it);
+		}
+		if (!add(*it))
+			del(*it);
+	}
+	set<T, comp> & operator&=(const set<T, comp> &b)
+	{
+		iterator it = b.begin();
+		for (; it != b.end(); ++it)
+		{
+			if (!is_in(*it))
+				del(*it);
+		}
+		if (!is_in(*it))
+			del(*it);
+	}
 	class iterator
 	{
 		node * cur;
 	public:
 		iterator() {}
+		iterator(const node *b) { cur = (node *)b; }
 		iterator(const iterator & b) { cur = b.cur; }
 		bool operator==(iterator b) { return cur == b.cur; }
 		bool operator!=(iterator b) { return cur != b.cur; }
-		iterator & operator++();
-		iterator & operator++(int);
-		iterator & operator--();
-		iterator & operator--(int);
+		iterator & operator++()
+		{
+			if (cur->right)
+			{
+				cur = cur->right;
+				while (cur->left)
+					cur = cur->left;
+				return *this;
+			}
+			while (cur == cur->parent->right)
+			{
+				cur = cur->parent;
+			}
+			cur = cur->parent;
+			return *this;
+		}
+		iterator operator++(int)
+		{
+			node * res = cur;
+			if (cur->right)
+			{
+				cur = cur->right;
+				while (cur->left)
+					cur = cur->left;
+				return *this;
+			}
+			while (cur == cur->parent->right)
+			{
+				cur = cur->parent;
+			}
+			cur = cur->parent;
+			return iterator(res);
+		}
+		iterator & operator--()
+		{
+			if (cur->left)
+			{
+				cur = cur->left;
+				while (cur->right)
+					cur = cur->right;
+				return *this;
+			}
+			while (cur == cur->parent->left)
+			{
+				cur = cur->parent;
+			}
+			cur = cur->parent;
+			return *this;
+		}
+		iterator operator--(int)
+		{
+			node * res = cur;
+			if (cur->left)
+			{
+				cur = cur->left;
+				while (cur->right)
+					cur = cur->right;
+				return *this;
+			}
+			while (cur == cur->parent->left)
+			{
+				cur = cur->parent;
+			}
+			cur = cur->parent;
+			return iterator(res);
+		}
 		iterator & operator=(iterator b) { cur = b.cur; return *this; }
-		T operator*() { return cur->value }
+		T operator*() { return cur->value; }
 	};
 	friend class set<T,comp>::iterator;
-	iterator begin();
-	iterator end();
+	iterator begin()
+	{
+		node * it = root;
+		while (it->left)
+		{
+			it = it->left;
+		}
+		return iterator(it);
+	}
+	iterator end()
+	{
+		node * it = root;
+		while (it->right)
+		{
+			it = it->right;
+		}
+		return iterator(it);
+	}
 };
 
 template <class T, bool comp(const T &, const T &)>
@@ -245,35 +427,12 @@ set<T, comp>::node::node(const node &b, node * par = NULL)
 }
 
 template <class T, bool comp(const T &, const T &)>
-set<T, comp>::node::node(const T &b, node * par = NULL)
-{
-	value = b;
-	parent = par;
-	if (par)
-		is_red = true;
-	else
-		is_red = false;
-	right = NULL;
-	left = NULL;
-}
-
-template <class T, bool comp(const T &, const T &)>
 set<T, comp>::node::~node()
 {
 	delete right;
 	delete left;
 }
 
-template <class T, bool comp(const T &, const T &)>
-set<T, comp>::node * set<T, comp>::node::brother()
-{
-	if (!this->parent)
-		return NULL;
-	if (this->parent->left = this)
-		return this->parent->right;
-	else
-		return this->parent->left;
-}
 
 template <class T, bool comp(const T &, const T &)>
 set<T,comp>::set()
@@ -294,6 +453,13 @@ set<T, comp>::set(const set<T, comp> &b)
 }
 
 template <class T, bool comp(const T &, const T &)>
+set<T, comp>::set(set<T, comp> &&b)
+{
+	root = b.root;
+	b.root = NULL;
+}
+
+template <class T, bool comp(const T &, const T &)>
 set<T, comp>::~set()
 {
 	delete root;
@@ -302,19 +468,19 @@ set<T, comp>::~set()
 template <class T, bool comp(const T &, const T &)>
 bool set<T, comp>::is_empty()
 {
-	return root = NULL;
+	return root == NULL;
 }
 
 template <class T, bool comp(const T &, const T &)>
 bool set<T, comp>::add(const T &b)
 {
-	if (is_empty())
+	if (root == NULL)
 	{
 		root = new node(b);
 		return true;
 	}
 	node * it = root;
-	node * p;
+	node * p = root;
 	while (it)
 	{
 		p = it;
@@ -325,7 +491,10 @@ bool set<T, comp>::add(const T &b)
 		else
 			it = it->right;
 	}
-	it = new node(b, p);
+	if (comp(p->value,b))
+		p->left = new node(b, p);
+	else
+		p->right = new node(b, p);
 	if (p->is_red)
 		chcolouradd(p->parent);
 	return true;
@@ -334,6 +503,8 @@ bool set<T, comp>::add(const T &b)
 template <class T, bool comp(const T &, const T &)>
 bool set<T, comp>::del(const T &b)
 {
+	if (root == NULL)
+		return false;
 	node * it = root;
 	while (it)
 	{
@@ -347,11 +518,13 @@ bool set<T, comp>::del(const T &b)
 	if (!it)
 		return false;
 	node * it2 = it;
+	node * brother = it->brother();
 	if ((it->right) && (it->left))
 	{
 		it = it->right;
-		while (it = it->left);
-		swap(it2->value, it->value);
+		while (it->left)
+			it = it->left;
+		std::swap(it2->value, it->value);
 	}
 	if (it->right == it->left)
 	{
@@ -359,6 +532,10 @@ bool set<T, comp>::del(const T &b)
 			it->parent->left = NULL;
 		if (it->parent->right == it)
 			it->parent->right = NULL;
+		if (!colour(it))
+			chcolourdel(brother);
+		it->right = NULL;
+		it->left = NULL;
 		delete it;
 		return true;
 	}
@@ -380,6 +557,8 @@ bool set<T, comp>::del(const T &b)
 		if (it->parent->left == it)
 			it->parent->left = it->left;
 	}
+	it->right = NULL;
+	it->left = NULL;
 	if (it->is_red)
 	{
 		delete it;
@@ -392,7 +571,7 @@ bool set<T, comp>::del(const T &b)
 		it->is_red = false;
 		return true;
 	}
-	chcolourdel(it);
+	chcolourdel(brother);
 	return true;
 }
 
@@ -404,7 +583,7 @@ bool set<T, comp>::is_in(const T &b)
 	{
 		if (it->value == b)
 			return true;
-		if (it->value > b)
+		if (comp(it->value, b))
 			it = it->left;
 		else
 			it = it->right;

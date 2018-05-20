@@ -4,13 +4,13 @@ class stack
 {
 private:
 	T * A;
-	size_t size;
+	size_t s;
 	size_t n;
-	void resize(size_t n);
+	void resize(size_t);
 public:
 	stack();
 	stack(size_t);
-	stack(T * B, size_t s);
+	stack(T *, size_t);
 	stack(const stack &);
 	stack(stack &&);
 	void push(const T &);
@@ -27,7 +27,7 @@ template <class T>
 stack<T>::stack()
 {
 	A = new T[16];
-	size = 16;
+	s = 16;
 	n = 0;
 }
 
@@ -36,7 +36,7 @@ template <class T>
 stack<T>::stack(size_t s)
 {
 	A = new T[s];
-	size = s;
+	this->s = s;
 	n = 0;
 }
 
@@ -45,7 +45,7 @@ template <class T>
 stack<T>::stack(T * B, size_t s)
 {
 	A = new T[s];
-	size = s;
+	this->s = s;
 	n = s;
 	for (size_t i = 0; i < n; i++)
 	{
@@ -58,7 +58,7 @@ template <class T>
 stack<T>::stack(const stack &b)
 {
 	A = new T[b.size];
-	size = b.size;
+	s = b.s;
 	n = b.n
 	for (size_t i = 0; i < n; i++)
 	{
@@ -71,10 +71,10 @@ template <class T>
 stack<T>::stack(stack &&b)
 {
 	A = b.A;
-	size = b.size;
+	s = b.s;
 	n = b.n;
 	b.A = new T[16];
-	b.size = 16;
+	b.s = 16;
 	b.n = 0;
 }
 
@@ -87,7 +87,7 @@ void stack<T>::resize(size_t newsize)
 	{
 		B[i] = A[i];
 	}
-	size = newsize;
+	s = newsize;
 	A = B;
 }
 
@@ -95,9 +95,9 @@ void stack<T>::resize(size_t newsize)
 template <class T>
 void stack<T>::push(const T &b)
 {
-	if (n == size)
+	if (n == s)
 	{
-		resize(2 * size);
+		resize(2 * s);
 	}
 	A[n] = b;
 	n++;
@@ -114,7 +114,7 @@ void stack<T>::pop()
 template <class T>
 T stack<T>::top()
 {
-	return A[n];
+	return A[n - 1];
 }
 
 
@@ -143,6 +143,6 @@ template <class T>
 void stack<T>::swap(stack<T> &b)
 {
 	swap(A, b.A);
-	swap(size, b.size);
+	swap(s, b.s);
 	swap(n, b.n);
 }

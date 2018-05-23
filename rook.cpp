@@ -1,11 +1,13 @@
 #pragma once
 #include "figures.h"
-set<pos, comp> rook::click()
+set<pos, comp> rook::click(board &_board)
 {
 	set<pos, comp> res;
 	unsigned char i = 1;
 	unsigned char j = 0;
-	while (x - i != 255)
+	unsigned int x = this->x;
+	unsigned int y = this->y;
+	while (x - i != UINT32_MAX)
 	{
 		if (_board.is_figure(x - i, y))
 		{
@@ -36,12 +38,12 @@ set<pos, comp> rook::click()
 			else
 				break;
 		}
-		res.add(pos(x - i, y));
+		res.add(pos(x + i, y));
 		j++;
 		i++;
 	}
 	i = 1;
-	while (y - i != 255)
+	while (y - i != UINT32_MAX)
 	{
 		if (_board.is_figure(x, y - i))
 		{
@@ -72,7 +74,7 @@ set<pos, comp> rook::click()
 			else
 				break;
 		}
-		res.add(pos(x, y - i));
+		res.add(pos(x, y + i));
 		j++;
 		i++;
 	}

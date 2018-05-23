@@ -1,6 +1,8 @@
 #pragma once
 #define NULL 0
+#include <algorithm>
 //red-black tree
+//todo операторы с пустыми множествами
 template <class T,bool comp(const T &, const T &)>
 class set  
 {
@@ -13,7 +15,8 @@ private:
 		bool is_red;
 		T value;
 		node();
-		node(const T &b, node * par = NULL)
+		node(const node &b, node * par = NULL);
+		node(const T b, node * par = NULL)
 		{
 			value = b;
 			parent = par;
@@ -24,7 +27,6 @@ private:
 			right = NULL;
 			left = NULL;
 		}
-		node(const node &, node *);
 		~node();
 		node * brother()
 		{
@@ -78,7 +80,7 @@ private:
 		if (colour(b->right))
 		{
 			if (colour(b->right->left))
-				rotateleft(b->right);
+				rotateright(b->right);
 			b->right->is_red = false;
 			b->is_red = true;
 			rotateleft(b);
@@ -223,12 +225,13 @@ private:
 	}
 public:
 	set();
-	set(const T &);
+	set(const T);
 	//set(const T *, size_t);
 	set(const set<T, comp> &);
 	set(set<T, comp> &&);
 	~set();
 	bool is_empty();
+	bool is_empty() const;
 	bool add(const T &); //true если добавлен. false если элемент уже есть
 	bool del(const T &); //true если удален. false если такого нет
 	bool is_in(const T &);
@@ -265,14 +268,28 @@ public:
 			res.add(*it);
 		return res;
 	}
+	set<T, comp> & operator=(const set<T, comp> &b)
+	{
+		delete root;
+		if (b.root == NULL)
+		{
+			root = NULL;
+			return *this;
+		}
+		root = new node(*b.root);
+		return *this;
+	}
 	set<T, comp> & operator|=(const set<T, comp> &b)
 	{
+		if (b.is_empty())
+			return *this;
 		iterator it = b.begin();
 		for (; it != b.end(); ++it)
 		{
 			add(*it);
 		}
 		add(*it);
+		return *this;
 	}
 	set<T, comp> & operator/=(const set<T, comp> &b)
 	{
@@ -282,6 +299,7 @@ public:
 			del(*it);
 		}
 		del(*it);
+		return *this;
 	}
 	set<T, comp> & operator^=(const set<T, comp> &b)
 	{
@@ -293,6 +311,7 @@ public:
 		}
 		if (!add(*it))
 			del(*it);
+		return *this;
 	}
 	set<T, comp> & operator&=(const set<T, comp> &b)
 	{
@@ -304,6 +323,7 @@ public:
 		}
 		if (!is_in(*it))
 			del(*it);
+		return *this;
 	}
 	class iterator
 	{
@@ -384,6 +404,24 @@ public:
 		T operator*() { return cur->value; }
 	};
 	friend class set<T,comp>::iterator;
+	iterator begin() const
+	{
+		node * it = root;
+		while (it->left)
+		{
+			it = it->left;
+		}
+		return iterator(it);
+	}
+	iterator end() const
+	{
+		node * it = root;
+		while (it->right)
+		{
+			it = it->right;
+		}
+		return iterator(it);
+	}
 	iterator begin()
 	{
 		node * it = root;
@@ -416,11 +454,11 @@ set<T, comp>::node::node(const node &b, node * par = NULL)
 	value = b.value;
 	parent = par;
 	is_red = b.is_red;
-	if (left)
+	if (b.left)
 		left = new node(*b.left, this);
 	else
 		left = NULL;
-	if (right)
+	if (b.right)
 		right = new node(*b.right, this);
 	else
 		right = NULL;
@@ -441,7 +479,7 @@ set<T,comp>::set()
 }
 
 template <class T, bool comp(const T &, const T &)>
-set<T, comp>::set(const T &b)
+set<T, comp>::set(const T b)
 {
 	root = new node(b);
 }
@@ -449,7 +487,12 @@ set<T, comp>::set(const T &b)
 template <class T, bool comp(const T &, const T &)>
 set<T, comp>::set(const set<T, comp> &b)
 {
-	root = new node(b);
+	if (b.root == NULL)
+	{
+		root = NULL;
+		return;
+	}
+	root = new node(*b.root);
 }
 
 template <class T, bool comp(const T &, const T &)>
@@ -467,6 +510,12 @@ set<T, comp>::~set()
 
 template <class T, bool comp(const T &, const T &)>
 bool set<T, comp>::is_empty()
+{
+	return root == NULL;
+}
+
+template <class T, bool comp(const T &, const T &)>
+bool set<T, comp>::is_empty() const
 {
 	return root == NULL;
 }
@@ -534,8 +583,6 @@ bool set<T, comp>::del(const T &b)
 			it->parent->right = NULL;
 		if (!colour(it))
 			chcolourdel(brother);
-		it->right = NULL;
-		it->left = NULL;
 		delete it;
 		return true;
 	}

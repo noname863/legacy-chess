@@ -1,9 +1,10 @@
 #include "figures.h"
-set<pos, comp> knight::click()
+set<pos, comp> knight::click(board &_board)
 {
 	pos * res = new pos[8];
 	unsigned char j = 0;
-
+	unsigned int x = this->x;
+	unsigned int y = this->y;
 	if ((x - 2 < 8) && (y - 1 < 8))
 	{
 		res[j] = pos(x - 2, y - 1);
@@ -78,7 +79,7 @@ set<pos, comp> knight::click()
 
 	set<pos, comp> a;
 	for (unsigned char i = 0; i < j; i++)
-		a.add(res[j]);
+		a.add(res[i]);
 	delete[] res;
 	return a;
 }

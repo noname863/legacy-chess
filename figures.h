@@ -52,6 +52,7 @@ public:
 	void invert();
 	bool is_check();
 	bool is_mate();
+	void place();
 	set<pos,comp> click(unsigned char, unsigned char);
 	figure * get_figure(unsigned char, unsigned char); //с указателем можно спокойно возвращать null
 };
@@ -101,5 +102,5 @@ public:
 class king : public figure
 {
 public:
-	set<pos, comp> click(board &) { return set<pos, comp>(); }
+	set<pos, comp> click(board &);
 };

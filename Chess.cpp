@@ -47,11 +47,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT imsg, WPARAM Wparam, LPARAM Lparam)
 	{
 		hdc = BeginPaint(hwnd, &ps);
 		_board.draw(hdc, hwnd);
+		if (current)
+			_board.to_colour(hdc, hwnd, clres);
+		EndPaint(hwnd, &ps);
 		break;
 	}
 	case WM_LBUTTONDOWN:
 	{
-		_board.draw(hdc, hwnd);
+		RECT rect;
 		UINT xpos = (LOWORD(Lparam) - 20) / 90;
 		UINT ypos = (HIWORD(Lparam) - 20) / 90;
 		if ((xpos > 7) || (ypos > 7))
@@ -76,7 +79,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT imsg, WPARAM Wparam, LPARAM Lparam)
 			//else
 			//	_board.whitecheck = _board.is_whitecheck();
 			_board.invert();
-			_board.draw(hdc, hwnd);
+			GetClientRect(hwnd, &rect);
+			InvalidateRect(hwnd, &rect, false);
 			break;
 		}
 		if ((current) && (clres.is_in(pos(xpos, ypos))))
@@ -87,20 +91,21 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT imsg, WPARAM Wparam, LPARAM Lparam)
 			current = NULL;
 			clres = set<pos, comp>();
 			_board.invert();
-			_board.draw(hdc, hwnd);
+			GetClientRect(hwnd, &rect);
+			InvalidateRect(hwnd, &rect, false);
 			break;
 		}
 		clres = _board.click(xpos, ypos);
 		if (!clres.is_empty())
 		{
-			_board.to_colour(hdc, hwnd, clres);
 			current = _board.get_figure(xpos, ypos);
+			GetClientRect(hwnd, &rect);
+			InvalidateRect(hwnd, &rect, false);
 		}
 		break;
 	}
 	case WM_DESTROY:
 	{
-		EndPaint(hwnd, &ps);
 		PostQuitMessage(0);
 		return 0;
 	}

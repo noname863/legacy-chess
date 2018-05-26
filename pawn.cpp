@@ -9,9 +9,9 @@ set<pos, comp> pawn::click(board &_board)
 			res.add(pos(x, y - 2));
 		res.add(pos(x, y - 1));
 	}
-	if ((_board.is_figure(x + 1, y - 1)) && (_board.get_figure(x + 1, y - 1)->colour() == colour()))
+	if ((_board.is_figure(x + 1, y - 1)) && (_board.get_figure(x + 1, y - 1)->colour() != colour()))
 		res.add(pos(x + 1, y - 1));
-	if ((_board.is_figure(x - 1, y - 1)) && (_board.get_figure(x - 1, y - 1)->colour() == colour()))
+	if ((_board.is_figure(x - 1, y - 1)) && (_board.get_figure(x - 1, y - 1)->colour() != colour()))
 		res.add(pos(x - 1, y - 1));
 	pawn * t;
 	if (t = dynamic_cast<pawn*> (_board.get_figure(x - 1, y)))

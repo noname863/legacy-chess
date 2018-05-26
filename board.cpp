@@ -5,49 +5,29 @@ board::board()
 {
 	is_white_turn = true;
 	count = 0;
+	delete[] a;
 	a = new figure*[32];
 	a[0] = new rook;
-	a[0]->fset(0, 7);
 	a[1] = new rook;
-	a[1]->fset(7, 7);
 	a[2] = new knight;
-	a[2]->fset(1, 7);
 	a[3] = new knight;
-	a[3]->fset(6, 7);
 	a[4] = new bishop;
-	a[4]->fset(2, 7);
 	a[5] = new bishop;
-	a[5]->fset(5, 7);
 	a[6] = new queen;
-	a[6]->fset(3, 7);
 	a[7] = new king;
-	a[7]->fset(4, 7);
 	for (size_t i = 8; i < 16; i++)
-	{
 		a[i] = new pawn;
-		a[i]->fset(i - 8, 6);
-	}
 	a[16] = new rook;
-	a[16]->fset(0, 0);
 	a[17] = new rook;
-	a[17]->fset(7, 0);
 	a[18] = new knight;
-	a[18]->fset(1, 0);
 	a[19] = new knight;
-	a[19]->fset(6, 0);
 	a[20] = new bishop;
-	a[20]->fset(2, 0);
 	a[21] = new bishop;
-	a[21]->fset(5, 0);
 	a[22] = new queen;
-	a[22]->fset(3, 0);
 	a[23] = new king;
-	a[23]->fset(4, 0);
 	for (size_t i = 24; i < 32; i++)
-	{
 		a[i] = new pawn;
-		a[i]->fset(i - 24, 1);
-	}
+	place();
 }
 
 
@@ -403,10 +383,10 @@ bool board::is_mate()
 {
 	size_t i = 16 - is_white_turn * 16;
 	size_t c = 16 + i;
-	if (!(a[39 - c]->click(*this)).is_empty())
+	if (!click(a[c - 11]->x, a[c - 11]->y).is_empty())
 		return false;
 	for (; i < c; i++)
-		if (!(a[i]->click(*this)).is_empty())
+		if (!click(a[i]->x, a[i]->y).is_empty())
 			return false;
 	return true;
 }
@@ -448,3 +428,31 @@ figure * board::get_figure(unsigned char x, unsigned char y)
 	return nullptr;
 }
 
+void board::place()
+{
+	a[0]->fset(0, 7);
+	a[1]->fset(7, 7);
+	a[2]->fset(1, 7);
+	a[3]->fset(6, 7);
+	a[4]->fset(2, 7);
+	a[5]->fset(5, 7);
+	a[6]->fset(3, 7);
+	a[7]->fset(4, 7);
+	for (size_t i = 8; i < 16; i++)
+	{
+		a[i]->fset(i - 8, 6);
+	}
+	a[16]->fset(0, 0);
+	a[17]->fset(7, 0);
+	a[18]->fset(1, 0);
+	a[19]->fset(6, 0);
+	a[20]->fset(2, 0);
+	a[21]->fset(5, 0);
+	a[22]->fset(3, 0);
+	a[23]->fset(4, 0);
+	for (size_t i = 24; i < 32; i++)
+	{
+		a[i]->fset(i - 24, 1);
+	}
+	is_white_turn = true;
+}

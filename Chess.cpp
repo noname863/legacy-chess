@@ -59,6 +59,56 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT imsg, WPARAM Wparam, LPARAM Lparam)
 		UINT ypos = (HIWORD(Lparam) - 20) / 90;
 		if ((xpos > 7) || (ypos > 7))
 			break;
+		if ((dynamic_cast<rook*>(current)) && (clres.is_in(pos(xpos, ypos))))
+			dynamic_cast<rook*>(current)->is_moved = true;
+		if ((dynamic_cast<king*>(current)) && (clres.is_in(pos(xpos, ypos))))
+		{
+			dynamic_cast<king*>(current)->is_moved = true;
+			if (pos(xpos - 2, ypos) == *current)
+			{
+				_board.Castling(true);
+				current = NULL;
+				clres = set<pos, comp>();
+				_board.invert();
+				if (_board.is_check())
+				{
+					if (_board.is_mate())
+					{
+						MessageBox(NULL, L"Мат", L"", MB_OK);
+						_board.place();
+						GetClientRect(hwnd, &rect);
+						InvalidateRect(hwnd, &rect, false);
+						break;
+					}
+					MessageBox(NULL, L"Шах", L"", MB_OK);
+				}
+				GetClientRect(hwnd, &rect);
+				InvalidateRect(hwnd, &rect, false);
+				break;
+			}
+			if (pos(xpos + 2, ypos) == *current)
+			{
+				_board.Castling(false);
+				current = NULL;
+				clres = set<pos, comp>();
+				_board.invert();
+				if (_board.is_check())
+				{
+					if (_board.is_mate())
+					{
+						MessageBox(NULL, L"Мат", L"", MB_OK);
+						_board.place();
+						GetClientRect(hwnd, &rect);
+						InvalidateRect(hwnd, &rect, false);
+						break;
+					}
+					MessageBox(NULL, L"Шах", L"", MB_OK);
+				}
+				GetClientRect(hwnd, &rect);
+				InvalidateRect(hwnd, &rect, false);
+				break;
+			}
+		}
 		if ((dynamic_cast<pawn*>(current)) && (clres.is_in(pos(xpos, ypos))))
 		{
 			if ((!_board.is_figure(xpos, ypos)) && ((pos(xpos - 1,ypos + 1) == *current) || (pos(xpos + 1, ypos + 1) == *current)))
@@ -70,15 +120,22 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT imsg, WPARAM Wparam, LPARAM Lparam)
 			{
 				dynamic_cast<pawn*>(current)->cond = 1;
 			}
-			//todo реализовать превращение
 			current = NULL;
 			clres = set<pos, comp>();
 
-			//if (_board.is_white_turn)
-			//	_board.blackcheck = _board.is_blackcheck();
-			//else
-			//	_board.whitecheck = _board.is_whitecheck();
 			_board.invert();
+			if (_board.is_check())
+			{
+				if (_board.is_mate())
+				{
+					MessageBox(NULL, L"Мат", L"", MB_OK);
+					_board.place();
+					GetClientRect(hwnd, &rect);
+					InvalidateRect(hwnd, &rect, false);
+					break;
+				}
+				MessageBox(NULL, L"Шах", L"", MB_OK);
+			}
 			GetClientRect(hwnd, &rect);
 			InvalidateRect(hwnd, &rect, false);
 			break;
@@ -91,6 +148,18 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT imsg, WPARAM Wparam, LPARAM Lparam)
 			current = NULL;
 			clres = set<pos, comp>();
 			_board.invert();
+			if (_board.is_check())
+			{
+				if (_board.is_mate())
+				{
+					MessageBox(NULL, L"Мат", L"", MB_OK);
+					_board.place();
+					GetClientRect(hwnd, &rect);
+					InvalidateRect(hwnd, &rect, false);
+					break;
+				}
+				MessageBox(NULL, L"Шах", L"", MB_OK);
+			}
 			GetClientRect(hwnd, &rect);
 			InvalidateRect(hwnd, &rect, false);
 			break;

@@ -32,8 +32,8 @@ public:
 	figure() { id = count; count++; }
 	~figure() { count--; }
 	bool colour() { return id < 16; }
-	void remove() { x = y = 255; }
-	bool is_remove() { return ((x == 255) && (y == 255)); }
+	void remove() { x = y = 64; }
+	bool is_remove() { return ((x == 64) && (y == 64)); }
 	virtual set<pos, comp> click(board &) { return set<pos, comp>(); }
 };
 
@@ -53,18 +53,15 @@ public:
 	bool is_check();
 	bool is_mate();
 	void place();
+	void Castling(bool is_right);
 	set<pos,comp> click(unsigned char, unsigned char);
 	figure * get_figure(unsigned char, unsigned char); //с указателем можно спокойно возвращать null
 };
 
-#ifndef _BOARD
-#define _BOARD
-//static board _board;
-#endif
-
 class rook : public figure
 {
 public:
+	bool is_moved;
 	set<pos, comp> click(board &);
 };
 
@@ -93,7 +90,6 @@ public:
 class pawn : public figure
 {
 public:
-	//pawn() : figure() { cond = 0; }
 	unsigned char cond;
 	set<pos, comp> click(board &);
 };
@@ -102,5 +98,6 @@ public:
 class king : public figure
 {
 public:
+	bool is_moved;
 	set<pos, comp> click(board &);
 };

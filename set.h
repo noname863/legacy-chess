@@ -91,6 +91,8 @@ private:
 	{
 		if (!it)
 			return;
+		if (it == root)
+			return;
 		if (colour(it->parent->right))
 		{
 			it->parent->right->is_red = false;
@@ -118,6 +120,7 @@ private:
 			{
 				it->is_red = true;
 				chcolourdel(it->parent);
+				return;
 			}
 		}
 		if (it == it->parent->right)
@@ -407,37 +410,41 @@ public:
 	iterator begin() const
 	{
 		node * it = root;
-		while (it->left)
-		{
-			it = it->left;
-		}
+		if (it)
+			while (it->left)
+			{
+				it = it->left;
+			}
 		return iterator(it);
 	}
 	iterator end() const
 	{
 		node * it = root;
-		while (it->right)
-		{
-			it = it->right;
-		}
+		if (it)
+			while (it->right)
+			{
+				it = it->right;
+			}
 		return iterator(it);
 	}
 	iterator begin()
 	{
 		node * it = root;
-		while (it->left)
-		{
-			it = it->left;
-		}
+		if (it)
+			while (it->left)
+			{
+				it = it->left;
+			}
 		return iterator(it);
 	}
 	iterator end()
 	{
 		node * it = root;
-		while (it->right)
-		{
-			it = it->right;
-		}
+		if (it)
+			while (it->right)
+			{
+				it = it->right;
+			}
 		return iterator(it);
 	}
 };
@@ -577,6 +584,12 @@ bool set<T, comp>::del(const T &b)
 	}
 	if (it->right == it->left)
 	{
+		if (!it->parent)
+		{
+			delete root;
+			root = NULL;
+			return true;
+		}
 		if (it->parent->left == it)
 			it->parent->left = NULL;
 		if (it->parent->right == it)
@@ -590,19 +603,29 @@ bool set<T, comp>::del(const T &b)
 	{
 		it2 = it->right;
 		it->right->parent = it->parent;
-		if (it->parent->right == it)
-			it->parent->right = it->right;
-		if (it->parent->left == it)
-			it->parent->left = it->right;
+		if (it->parent)
+		{
+			if (it->parent->right == it)
+				it->parent->right = it->right;
+			if (it->parent->left == it)
+				it->parent->left = it->right;
+		}
+		else
+			root = it->right;
 	}
 	if (it->left)
 	{
 		it2 = it->left;
 		it->left->parent = it->parent;
-		if (it->parent->right == it)
-			it->parent->right = it->left;
-		if (it->parent->left == it)
-			it->parent->left = it->left;
+		if (it->parent)
+		{
+			if (it->parent->right == it)
+				it->parent->right = it->left;
+			if (it->parent->left == it)
+				it->parent->left = it->left;
+		}
+		else
+			root = it->right;
 	}
 	it->right = NULL;
 	it->left = NULL;

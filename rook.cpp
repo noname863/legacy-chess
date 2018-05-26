@@ -2,6 +2,8 @@
 #include "figures.h"
 set<pos, comp> rook::click(board &_board)
 {
+	if (is_remove())
+		return set<pos, comp>();
 	set<pos, comp> res;
 	unsigned char i = 1;
 	unsigned char j = 0;

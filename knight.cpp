@@ -1,6 +1,8 @@
 #include "figures.h"
 set<pos, comp> knight::click(board &_board)
 {
+	if (is_remove())
+		return set<pos, comp>();
 	pos * res = new pos[8];
 	unsigned char j = 0;
 	unsigned int x = this->x;

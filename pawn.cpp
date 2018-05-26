@@ -2,6 +2,8 @@
 #include "set.h"
 set<pos, comp> pawn::click(board &_board)
 {
+	if (is_remove())
+		return set<pos, comp>();
 	set<pos, comp> res;
 	if (!_board.is_figure(x, y - 1))
 	{

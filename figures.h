@@ -93,7 +93,7 @@ public:
 class pawn : public figure
 {
 public:
-	pawn() : figure() { cond = 0; }
+	//pawn() : figure() { cond = 0; }
 	unsigned char cond;
 	set<pos, comp> click(board &);
 };

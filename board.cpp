@@ -441,6 +441,7 @@ void board::place()
 	for (size_t i = 8; i < 16; i++)
 	{
 		a[i]->fset(i - 8, 6);
+		dynamic_cast<pawn*>(a[i])->cond = 0;
 	}
 	a[16]->fset(0, 0);
 	a[17]->fset(7, 0);
@@ -453,6 +454,7 @@ void board::place()
 	for (size_t i = 24; i < 32; i++)
 	{
 		a[i]->fset(i - 24, 1);
+		dynamic_cast<pawn*>(a[i])->cond = 0;
 	}
 	is_white_turn = true;
 }

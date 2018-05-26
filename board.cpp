@@ -385,12 +385,14 @@ void board::invert()
 {
 	if (is_white_turn)
 		for (size_t i = 24; i < 32; i++)
-			if (dynamic_cast<pawn*>(a[i])->cond == 1)
-				dynamic_cast<pawn*>(a[i])->cond = 2;
+			if (dynamic_cast<pawn*>(a[i]))
+				if (dynamic_cast<pawn*>(a[i])->cond == 1)
+					dynamic_cast<pawn*>(a[i])->cond = 2;
 	if (!is_white_turn)
 		for (size_t i = 8; i < 16; i++)
-			if (dynamic_cast<pawn*>(a[i])->cond == 1)
-				dynamic_cast<pawn*>(a[i])->cond = 2;
+			if (dynamic_cast<pawn*>(a[i]))
+				if (dynamic_cast<pawn*>(a[i])->cond == 1)
+					dynamic_cast<pawn*>(a[i])->cond = 2;
 	is_white_turn = !is_white_turn;
 	for (size_t i = 0; i < 32; i++)
 		if (!a[i]->is_remove())
@@ -516,6 +518,19 @@ void board::place()
 	dynamic_cast<king*>(a[7])->is_moved = false;
 	dynamic_cast<king*>(a[23])->is_moved = false;
 	is_white_turn = true;
+}
+
+void board::transform(figure *b)
+{
+	size_t i = 0;
+	while (a[i++] != b);
+	i--;
+	pos t = *a[i];
+	delete a[i];
+	a[i] = new queen;
+	a[i]->id = i;
+	a[i]->x = t.x;
+	a[i]->y = t.y;
 }
 
 void board::Castling(bool is_right)

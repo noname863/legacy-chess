@@ -29,6 +29,7 @@ class figure : public pos
 protected:
 	unsigned char id;
 public:
+	friend class board;
 	figure() { id = count; count++; }
 	~figure() { count--; }
 	bool colour() { return id < 16; }
@@ -53,6 +54,7 @@ public:
 	bool is_check();
 	bool is_mate();
 	void place();
+	void transform(figure *);
 	void Castling(bool is_right);
 	set<pos,comp> click(unsigned char, unsigned char);
 	figure * get_figure(unsigned char, unsigned char); //с указателем можно спокойно возвращать null
@@ -92,6 +94,7 @@ class pawn : public figure
 public:
 	unsigned char cond;
 	set<pos, comp> click(board &);
+	bool is_on_last_line() { return y == 0; }
 };
 
 

@@ -120,6 +120,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT imsg, WPARAM Wparam, LPARAM Lparam)
 			{
 				dynamic_cast<pawn*>(current)->cond = 1;
 			}
+			if (dynamic_cast<pawn*>(current)->is_on_last_line())
+			{
+				_board.transform(current);
+			}
 			current = NULL;
 			clres = set<pos, comp>();
 

@@ -625,7 +625,7 @@ bool set<T, comp>::del(const T &b)
 				it->parent->left = it->left;
 		}
 		else
-			root = it->right;
+			root = it->left;
 	}
 	it->right = NULL;
 	it->left = NULL;

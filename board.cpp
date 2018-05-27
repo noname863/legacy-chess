@@ -162,6 +162,8 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 {
 	set<pos, comp>::iterator it = t.begin();
 	size_t i;
+	if (t.is_empty())
+		return;
 	for (; it != t.end(); ++it)
 	{
 		i = 0;
@@ -288,6 +290,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 			bmppaint(hwnd, hdc, L"Gblack.bmp", 20 + (*it).x * 90, 20 + (*it).y * 90, 90, 90);
 		else
 			bmppaint(hwnd, hdc, L"Gwhite.bmp", 20 + (*it).x * 90, 20 + (*it).y * 90, 90, 90);
+		return;
 	}
 	if (i < 16)
 	{
@@ -297,6 +300,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GWPawnB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GWPawnW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 		if (dynamic_cast<rook*>(a[i]))
 		{
@@ -304,6 +308,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GWRookB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GWRookW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 		if (dynamic_cast<king*>(a[i]))
 		{
@@ -311,6 +316,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GWKingB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GWKingW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 		if (dynamic_cast<knight*>(a[i]))
 		{
@@ -318,6 +324,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GWKnightB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GWKnightW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 		if (dynamic_cast<bishop*>(a[i]))
 		{
@@ -325,6 +332,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GWBishopB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GWBishopW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 		if (dynamic_cast<queen*>(a[i]))
 		{
@@ -332,6 +340,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GWQueenB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GWQueenW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 	}
 	if (i < 32)
@@ -342,6 +351,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GBPawnB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GBPawnW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 		if (dynamic_cast<rook*>(a[i]))
 		{
@@ -349,6 +359,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GBRookB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GBRookW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 		if (dynamic_cast<king*>(a[i]))
 		{
@@ -356,6 +367,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GBKingB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GBKingW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 		if (dynamic_cast<knight*>(a[i]))
 		{
@@ -363,6 +375,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GBKnightB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GBKnightW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 		if (dynamic_cast<bishop*>(a[i]))
 		{
@@ -370,6 +383,7 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GBBishopB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GBBishopW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 		if (dynamic_cast<queen*>(a[i]))
 		{
@@ -377,11 +391,19 @@ void board::to_colour(HDC hdc, HWND hwnd, set<pos, comp> &t)
 				bmppaint(hwnd, hdc, L"GBQueenB.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
 			else
 				bmppaint(hwnd, hdc, L"GBQueenW.bmp", 20 + a[i]->x * 90, 20 + a[i]->y * 90, 90, 90);
+			return;
 		}
 	}
 }
 
 void board::invert()
+{
+	for (size_t i = 0; i < 32; i++)
+		if (!a[i]->is_remove())
+			a[i]->fset(7 - a[i]->x, 7 - a[i]->y);
+}
+
+void board::change_turn()
 {
 	if (is_white_turn)
 		for (size_t i = 24; i < 32; i++)
@@ -394,21 +416,24 @@ void board::invert()
 				if (dynamic_cast<pawn*>(a[i])->cond == 1)
 					dynamic_cast<pawn*>(a[i])->cond = 2;
 	is_white_turn = !is_white_turn;
-	for (size_t i = 0; i < 32; i++)
-		if (!a[i]->is_remove())
-			a[i]->fset(7 - a[i]->x, 7 - a[i]->y);
+	invert();
 }
 
 bool board::is_check()
 {
 	size_t i = is_white_turn * 16;
 	size_t c = i + 16;
+	invert();
 	for (; i < c; i++)
 	{
 		if (!a[i]->is_remove())
 			if ((a[i]->click(*this)).is_in(*a[39 - c]))
+			{
+				invert();
 				return true;
+			}
 	}
+	invert();
 	return false;
 }
 
@@ -496,7 +521,8 @@ void board::place()
 	for (size_t i = 8; i < 16; i++)
 	{
 		a[i]->fset(i - 8, 6);
-		dynamic_cast<pawn*>(a[i])->cond = 0;
+		if (dynamic_cast<pawn*>(a[i]))
+			dynamic_cast<pawn*>(a[i])->cond = 0;
 	}
 	a[16]->fset(0, 0);
 	a[17]->fset(7, 0);
@@ -509,7 +535,8 @@ void board::place()
 	for (size_t i = 24; i < 32; i++)
 	{
 		a[i]->fset(i - 24, 1);
-		dynamic_cast<pawn*>(a[i])->cond = 0;
+		if (dynamic_cast<pawn*>(a[i]))
+			dynamic_cast<pawn*>(a[i])->cond = 0;
 	}
 	dynamic_cast<rook*>(a[0])->is_moved = false;
 	dynamic_cast<rook*>(a[1])->is_moved = false;
@@ -520,14 +547,28 @@ void board::place()
 	is_white_turn = true;
 }
 
-void board::transform(figure *b)
+void board::transform(figure *b, unsigned char type)
 {
 	size_t i = 0;
 	while (a[i++] != b);
 	i--;
 	pos t = *a[i];
 	delete a[i];
-	a[i] = new queen;
+	switch (type)
+	{
+	case 0:
+		a[i] = new queen;
+		break;
+	case 1:
+		a[i] = new rook;
+		break;
+	case 2:
+		a[i] = new knight;
+		break;
+	case 3:
+		a[i] = new bishop;
+		break;
+	}
 	a[i]->id = i;
 	a[i]->x = t.x;
 	a[i]->y = t.y;

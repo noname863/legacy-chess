@@ -7,7 +7,7 @@ set<pos, comp> pawn::click(board &_board)
 	set<pos, comp> res;
 	if (!_board.is_figure(x, y - 1))
 	{
-		if (cond == 0)
+		if ((cond == 0) && (!_board.is_figure(x, y - 2)))
 			res.add(pos(x, y - 2));
 		res.add(pos(x, y - 1));
 	}

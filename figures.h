@@ -51,10 +51,11 @@ public:
 	void draw(HDC, HWND);
 	void to_colour(HDC, HWND, set<pos, comp> &);
 	void invert();
+	void change_turn();
 	bool is_check();
 	bool is_mate();
 	void place();
-	void transform(figure *);
+	void transform(figure *, unsigned char);
 	void Castling(bool is_right);
 	set<pos,comp> click(unsigned char, unsigned char);
 	figure * get_figure(unsigned char, unsigned char); //с указателем можно спокойно возвращать null
